@@ -15,8 +15,8 @@ data_methane = h5py.File("/Volumes/Transcend/repositories/NN-sq/data_sets/methan
 data_isopentane = h5py.File("/Volumes/Transcend/repositories/NN-sq/data_sets/isopentane_cn_dft.hdf5", "r")
 data_2isohex = h5py.File("/Volumes/Transcend/repositories/NN-sq/data_sets/2isohexane_cn_dft_pruned.hdf5", "r")
 data_3isohex = h5py.File("/Volumes/Transcend/repositories/NN-sq/data_sets/3isohexane_cn_dft_pruned.hdf5", "r")
-data_dimer = h5py.File("/Volumes/Transcend/repositories/NN-sq/data_sets/isopentane_dimer_cn_dft.hdf5", "r")
-# data squalane
+# data_dimer = h5py.File("/Volumes/Transcend/repositories/NN-sq/data_sets/isopentane_dimer_cn_dft.hdf5", "r")
+data_squalane = h5py.File("/Volumes/Transcend/repositories/NN-sq/data_sets/squalane_cn_dft.hdf5", "r")
 
 ref_ene = -133.1 * 2625.50
 
@@ -67,24 +67,30 @@ fn_3hex = np.array(data_3isohex.get("Filenumber"))
 traj_idx_3hex, ene_3hex, zs_3hex, fn_3hex, xyz_3hex, forces_3hex = util_fn.sort_traj(traj_idx_3hex, ene_3hex, zs_3hex, fn_3hex, xyz_3hex, forces_3hex)
 
 
-ene_dimer = np.array(data_dimer.get("ene")) * 2625.50
-ene_dimer = ene_dimer - ref_ene
-zs_dimer = np.array(data_dimer.get("zs"), dtype=np.int32)
-xyz_dimer = np.array(data_dimer.get("xyz"), dtype=np.int32)
-forces_dimer = np.array(data_dimer.get("forces"), dtype=np.int32)
-traj_idx_dimer = np.array(data_dimer.get("traj_idx"))
-fn_dimer = np.array(data_dimer.get("Filenumber"))
+# ene_dimer = np.array(data_dimer.get("ene")) * 2625.50
+# ene_dimer = ene_dimer - ref_ene
+# zs_dimer = np.array(data_dimer.get("zs"), dtype=np.int32)
+# xyz_dimer = np.array(data_dimer.get("xyz"), dtype=np.int32)
+# forces_dimer = np.array(data_dimer.get("forces"), dtype=np.int32)
+# traj_idx_dimer = np.array(data_dimer.get("traj_idx"))
+# fn_dimer = np.array(data_dimer.get("Filenumber"))
+#
+# # Sorting the trajectories of isopentane dimer
+# traj_idx_dimer, ene_dimer, zs_dimer, fn_dimer, xyz_dimer, forces_dimer = util_fn.sort_traj(traj_idx_dimer, ene_dimer, zs_dimer, fn_dimer, xyz_dimer, forces_dimer)
 
-# Sorting the trajectories of isopentane dimer
-traj_idx_dimer, ene_dimer, zs_dimer, fn_dimer, xyz_dimer, forces_dimer = util_fn.sort_traj(traj_idx_dimer, ene_dimer, zs_dimer, fn_dimer, xyz_dimer, forces_dimer)
+ene_squal = np.array(data_squalane.get("ene")) * 2625.50
+ene_squal = ene_squal - ref_ene
+zs_squal = np.array(data_squalane.get("zs"), dtype=np.int32)
+xyz_squal = np.array(data_squalane.get("xyz"), dtype=np.int32)
+forces_squal = np.array(data_squalane.get("forces"), dtype=np.int32)
+traj_idx_squal = np.array(data_squalane.get("traj_idx"))
+fn_squal = np.array(data_squalane.get("Filenumber"))
 
-# ene_squal = np.array(data_squal.get("ene")[0]) * 2625.50
-# ene_squal = ene_squal - ref_ene
-# zs_squal = np.array(data_squal.get("zs")[0], dtype=np.int32)
+traj_idx_squal, ene_squal, zs_squal, fn_squal, xyz_squal, forces_squal = util_fn.sort_traj(traj_idx_squal, ene_squal, zs_squal, fn_squal, xyz_squal, forces_squal)
 
 # Concatenating all the data
-ene_for_scaler = np.concatenate((ene_methane[:100], ene_isopent[:100], ene_2hex[:100], ene_3hex[:100]))
-zs_for_scaler = list(zs_methane[:100]) + list(zs_isopent[:100]) + list(zs_2hex[:100]) + list(zs_3hex[:100])
+ene_for_scaler = np.concatenate((ene_methane[:100], ene_isopent[:100], ene_2hex[:100], ene_3hex[:100], ene_squal[:100]))
+zs_for_scaler = list(zs_methane[:100]) + list(zs_isopent[:100]) + list(zs_2hex[:100]) + list(zs_3hex[:100]) + list(zs_squal[:100])
 # ene_for_scaler = np.asarray([ene_methane[0], ene_isopent[0], ene_2hex[0], ene_3hex[0], ene_dimer[0]])
 # zs_for_scaler = [zs_methane[0], zs_isopent[0], zs_2hex[0], zs_3hex[0], zs_dimer[0]]
 # ene_for_scaler = np.asarray([ene_methane[0], ene_isopent[0], ene_2hex[0], ene_3hex[0]])

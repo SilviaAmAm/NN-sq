@@ -5,7 +5,7 @@ import seaborn as sns
 sns.set()
 sns.set_style("white")
 
-data = h5py.File("../data_sets/3isohexane_cn_dft_pruned.hdf5", "r")
+data = h5py.File("../data_sets/squalane_cn_dft.hdf5", "r")
 
 # Extracting the data (If plotting the DFT surface, uncomment unit conversion!)
 xyz = np.array(data.get("xyz"))
@@ -42,5 +42,5 @@ ax.set_xlabel("Time step (0.0005 ps)")
 ax.set_ylabel("Energy (Ha)")
 # ax.plot([0.0, len(x)], [tot_ene_react, tot_ene_react], 'r--', linewidth=2, c="black")
 # ax.plot([0.0, len(x)], [tot_ene_prod, tot_ene_prod], 'r--', linewidth=2, c="black")
-plt.savefig("../images/3isohexane_pruned_dft.png", dpi=200)
+plt.savefig("../images/squalane_dft.png", dpi=200)
 plt.show()
