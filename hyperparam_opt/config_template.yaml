@@ -24,21 +24,32 @@ search_space:
   # optimize over and their bounds for float and int typed variables,
   # or the possible choices for enumeration-typed variables.
 
-  l1_reg:
-    min: 1e-10
-    max: 1e-1
-    type: float       # from 10 to 100 (with inclusive endpoints)
-    warp: log
 
-  l2_reg:
-    min: 1e-10
-    max: 1e-1
+  batch_size:
+    min: 10
+    max: 100
+    type: int
+
+  iterations:
+    min: 10
+    max: 1000
+    type: int
+
+  learning_rate:
+    min: 1e-6
+    max: 1e-2
     type: float
     warp: log
 
-  learning_rate:
-    min: 1e-4
-    max: 1e-1
+  l2_reg:
+    min: 1e-9
+    max: 3e-4
+    type: float
+    warp: log
+
+  l1_reg:
+    min: 1e-9
+    max: 1e-4
     type: float
     warp: log
 
