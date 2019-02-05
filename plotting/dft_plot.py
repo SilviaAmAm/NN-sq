@@ -36,6 +36,7 @@ for item in n_traj:
 
 # Plotting
 x = list(range(len(ene)))
+print(len(x))
 fig, ax = plt.subplots(1, figsize=(8,6))
 ax.scatter(x, ene, c=traj_idx)
 ax.set_xlabel("Time step (0.0005 ps)")
