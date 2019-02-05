@@ -16,22 +16,11 @@ traj_idx = np.array(data.get("traj_idx"))
 file_number = np.array(data.get("Filenumber"))
 
 # Sorting the trajectories
-idx_sorted = traj_idx.argsort()
+idx_sorted = file_number.argsort()
 
 ene = ene[idx_sorted]
 traj_idx = traj_idx[idx_sorted]
 file_number = file_number[idx_sorted]
-
-n_traj = np.unique(traj_idx)
-
-for item in n_traj:
-    indices = np.where(traj_idx == item)
-
-    idx_sorted = file_number[indices].argsort()
-
-    ene[indices] = ene[indices][idx_sorted]
-    traj_idx[indices] = traj_idx[indices][idx_sorted]
-    file_number[indices] = file_number[indices][idx_sorted]
 
 
 # Plotting

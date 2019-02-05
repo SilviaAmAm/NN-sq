@@ -150,11 +150,11 @@ ch_dist_alk_vr, ch_dist_cn_vr = get_distances(xyz, h_id, c_id)
 
 # print_how_many_pst(h_id, traj_idx)
 
-plt.scatter(range(len(ch_dist_alk_vr)), ch_dist_alk_vr)
-plt.show()
-exit()
+# plt.scatter(range(len(ch_dist_alk_vr)), ch_dist_alk_vr)
+# plt.show()
+# exit()
 
-g = sns.jointplot(ch_dist_alk_vr, ch_dist_cn_vr, kind="kde", height=7, space=0, xlim=(0.5, 5.0), ylim=(0.5, 5.0))
+g = sns.jointplot(ch_dist_alk_vr, ch_dist_cn_vr, kind="kde",  height=7, space=0, xlim=(0.5, 5.0), ylim=(0.5, 5.0))
 g.set_axis_labels("D2 (Å)", "D1 (Å)")
 plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
 plt.savefig("../images/2d_kde_squalane.png", dpi=200)
