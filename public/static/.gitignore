@@ -1,3 +1,5 @@
 *.pickle
 *.png
 ._*
+*.out
+
