@@ -1,54 +1,44 @@
 import pickle
 import numpy as np
+import sklearn.pipeline
+from qml import qmlearn
 import h5py
-from qml.aglaia.aglaia import ARMP
 from random import shuffle
 
+# Create data
+dataset = h5py.File("../data_sets/methane_cn_dft.hdf5")
 
-ref_ene = -133.1 * 2625.5
+ref_energy = -133.1 * 2625.5
 scaling = pickle.load(open("../scaler/scaler.pickle", "rb"))
+
+data = qmlearn.Data()
+traj_idx = np.asarray(dataset['traj_idx'], dtype=int)
+
+# Keeping a trajectory for testing
+idx_train = np.where(traj_idx != 14)[0]
+
+# Taking N samples for training
 n_samples = 15000
+shuffle(idx_train)
+idx_train = idx_train[:n_samples]
 
-data_methane = h5py.File("/home/sa16246/repositories/NN-sq/data_sets/methane_cn_dft.hdf5", "r")
-data_squal = h5py.File("/home/sa16246/repositories/NN-sq/data_sets/squalane_cn_dft.hdf5", "r")
+data.coordinates = np.asarray(dataset['xyz'])[idx_train]
+data.nuclear_charges = np.array(dataset['zs'])[idx_train]
+data._set_ncompounds(len(data.nuclear_charges))
+data.natoms = np.asarray([len(data.nuclear_charges[0])]*len(data.nuclear_charges))
+energies = np.asarray(dataset['ene'])[idx_train]*2625.50
+energies -= ref_energy
+ene_scaled = scaling.transform(data.nuclear_charges, energies)
+data.set_energies(ene_scaled)
 
-# Getting the data
-ene_methane = np.array(data_methane.get("ene")) * 2625.50
-ene_methane = ene_methane - ref_ene
-zs_methane = np.array(data_methane.get("zs"), dtype=np.int32)
-xyz_methane = np.array(data_methane.get("xyz"), dtype=np.int32)
-
-
-ene_squal = np.array(data_squal.get("ene")) * 2625.50
-ene_squal = ene_squal - ref_ene
-zs_squal = np.array(data_squal.get("zs"), dtype=np.int32)
-xyz_squal = np.array(data_squal.get("xyz"), dtype=np.int32)
-n_atoms_squal = len(zs_squal[0])
-
-# Padding the inputs
-pad_xyz_methane = np.concatenate((xyz_methane, np.zeros((xyz_methane.shape[0], n_atoms_squal - xyz_methane.shape[1], 3))), axis=1)
-pad_zs_methane = np.concatenate((zs_methane, np.zeros((zs_methane.shape[0], n_atoms_squal - zs_methane.shape[1]), dtype=np.int32)), axis=1)
-
-# Scaling the data
-
-
-
-# Taking 15000 random methane samples
-all_idx = list(range(len(ene_methane)))
-shuffle(all_idx)
-train_idx = all_idx[:n_samples]
-
-
-
-# Create the estimator
-acsf_params = {"nRs2":14, "nRs3":14, "nTs":14, "rcut":3.29, "acut":3.29, "zeta":100.06564927139748, "eta":39.81824764370754}
-estimator = ARMP(representation_name='acsf', representation_params=acsf_params, hidden_layer_sizes=(150,))
-
-estimator.set_properties(concat_ene_scaled[:n_samples])
-estimator.generate_representation(pad_xyz_methane, pad_zs_methane, method="fortran")
+# Create model
+estimator = sklearn.pipeline.make_pipeline(
+                qmlearn.representations.AtomCenteredSymmetryFunctions(data),
+                qmlearn.models.NeuralNetwork(hl3=0)
+                )
 
 pickle.dump(estimator, open('model.pickle', 'wb'))
-
+indices = np.arange(n_samples)
 with open('idx.csv', 'w') as f:
-    for i in range(n_samples):
+    for i in indices:
         f.write('%s\n' % i)
