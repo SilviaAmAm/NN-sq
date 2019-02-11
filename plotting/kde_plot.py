@@ -164,7 +164,7 @@ ch_dist_alk_vr, ch_dist_cn_vr = get_distances(xyz, h_id, c_id)
 idx = list(range(traj_idx.shape[0]))
 shuffle(idx)
 
-g = sns.jointplot(ch_dist_alk_vr[idx], ch_dist_cn_vr[idx], kind="kde", height=7, space=0, xlim=(0.5, 5.0), ylim=(0.5, 5.0))
+g = sns.jointplot(ch_dist_alk_vr[idx], ch_dist_cn_vr[idx], kind="scatter", height=7, space=0, xlim=(0.5, 5.0), ylim=(0.5, 5.0), alpha=0.1)
 g.set_axis_labels("D2 (Å)", "D1 (Å)")
 plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
 plt.savefig("../images/2d_kde_squalane.png", dpi=200)
