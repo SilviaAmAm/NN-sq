@@ -7,7 +7,7 @@ strategy:
 search_space:
   atomcenteredsymmetryfunctions__nbasis:
     min: 6
-    max: 30
+    max: 19
     type: int
     warp: log
 
@@ -43,7 +43,7 @@ search_space:
 
   neuralnetwork__iterations:
     min: 300
-    max: 5000
+    max: 1500
     type: int
     warp: log
 
