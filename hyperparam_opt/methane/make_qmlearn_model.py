@@ -30,6 +30,7 @@ energies = np.asarray(dataset['ene'])[idx_train]*2625.50
 energies -= ref_energy
 ene_scaled = scaling.transform(data.nuclear_charges, energies)
 data.set_energies(ene_scaled)
+traj_idx = traj_idx[idx_train]
 
 # Create model
 estimator = sklearn.pipeline.make_pipeline(
@@ -43,3 +44,6 @@ with open('idx.csv', 'w') as f:
     for i in indices:
         f.write('%s\n' % i)
 
+with open('groups.csv', 'w') as f:
+    for i in indices:
+        f.write('%s\n' % traj_idx[i])

@@ -48,38 +48,31 @@ data_squal = h5py.File("../data_sets/squalane_cn_dft.hdf5", "r")
 data_2isohex = h5py.File("../data_sets/2isohexane_cn_dft_pruned.hdf5")
 data_3isohex = h5py.File("../data_sets/3isohexane_cn_dft_pruned.hdf5")
 
-
 # Squalane data
 idx = [0, -1]
 xyz_squal = np.array(data_squal.get("xyz")) 
-zs_squal = np.array(data_squal.get("zs"), dtype=np.int32) 
+zs_squal = np.array(data_squal.get("zs"), dtype=np.int32)
 
-# 3-isohexane
+# 3-isohexane (secondary abstraction)
 idx_3isohex = np.asarray(data_3isohex.get('traj_idx'), dtype=int)
-idx_3isohex_traj = np.where(idx_3isohex == 14)[0]
+idx_3isohex_traj = np.where(idx_3isohex == 13)[0]
 
 xyz_3isohex = np.array(data_3isohex.get("xyz"))[idx_3isohex_traj]
 zs_3isohex = np.array(data_3isohex.get("zs"), dtype=np.int32)[idx_3isohex_traj]
-xyz_3isohex = xyz_3isohex 
-zs_3isohex = zs_3isohex 
 
-# 2-isohexane
+# 2-isohexane (secondary abstraction)
 idx_2isohex = np.asarray(data_2isohex.get('traj_idx'), dtype=int)
-idx_2isohex_traj = np.where(idx_2isohex == 12)[0]
+idx_2isohex_traj = np.where(idx_2isohex == 2)[0]
 
 xyz_2isohex = np.array(data_2isohex.get("xyz"))[idx_2isohex_traj]
 zs_2isohex = np.array(data_2isohex.get("zs"), dtype=np.int32)[idx_2isohex_traj]
-xyz_2isohex = xyz_2isohex 
-zs_2isohex = zs_2isohex 
 
-# Isopentane
+# Isopentane (secondary abstraction)
 idx_isopentane = np.asarray(data_isopentane.get('traj_idx'), dtype=int)
-idx_isopentane_traj = np.where(idx_isopentane == 22)[0]
+idx_isopentane_traj = np.where(idx_isopentane == 1)[0]
 
 xyz_isopentane = np.array(data_isopentane.get("xyz"))[idx_isopentane_traj]
 zs_isopentane = np.array(data_isopentane.get("zs"), dtype=np.int32)[idx_isopentane_traj]
-xyz_isopentane = xyz_isopentane 
-zs_isopentane = zs_isopentane 
 
 # Methane
 idx_methane = np.asarray(data_methane.get('traj_idx'), dtype=int)
@@ -87,8 +80,6 @@ idx_methane_traj = np.where(idx_methane == 14)[0]
 
 xyz_methane = np.array(data_methane.get("xyz"))[idx_methane_traj]
 zs_methane = np.array(data_methane.get("zs"), dtype=np.int32)[idx_methane_traj]
-xyz_methane = xyz_methane 
-zs_methane = zs_methane 
 
 # Generating all the representations
 n_basis = 14
@@ -118,74 +109,88 @@ acsf_squal_c = reshape_trim(acsf_squal, zs_squal)
 print(acsf_methane_c.shape, acsf_isopentane_c.shape, acsf_2isohex_c.shape, acsf_squal_c.shape)
 
 # Comparing the carbon atoms from squalane to methane
-# diff_methane=[]
-#
-# start = time.time()
-# for j in range(acsf_squal_c.shape[0]):
-#     diff=[]
-#
-#     for i in range(acsf_methane_c.shape[0]):
-#         diff.append(np.linalg.norm(acsf_methane_c[i]-acsf_squal_c[j]))
-#
-#     diff_methane.append(min(diff))
-#
-# end = time.time()
-# print("It took %s s for methane" % str(end-start))
-#
-# np.savez("diff_methane.npz", diff_methane)
-
-# Comparing the carbon atoms from squalane to isopentane
-diff_isopentane=[]
+diff_euc_methane=[]
+diff_man_methane=[]
 
 start = time.time()
 for j in range(acsf_squal_c.shape[0]):
-    diff=[]
+    diff_euc=[]
+    diff_man=[]
+
+    for i in range(acsf_methane_c.shape[0]):
+        diff_euc.append(np.linalg.norm(acsf_methane_c[i] - acsf_squal_c[j]))
+        diff_man.append(np.sum(np.abs(acsf_methane_c[i] - acsf_squal_c[j])))
+
+    diff_euc_methane.append(min(diff_euc))
+    diff_man_methane.append(min(diff_man))
+
+end = time.time()
+print("It took %s s for methane" % str(end-start))
+
+np.savez("diff_methane.npz", diff_euc_methane, diff_man_methane)
+
+# Comparing the carbon atoms from squalane to isopentane
+diff_euc_isopentane=[]
+diff_man_isopentane=[]
+
+start = time.time()
+for j in range(acsf_squal_c.shape[0]):
+    diff_euc=[]
+    diff_man=[]
 
     for i in range(acsf_isopentane_c.shape[0]):
-        diff.append(np.linalg.norm(acsf_isopentane_c[i]-acsf_squal_c[j]))
+        diff_euc.append(np.linalg.norm(acsf_isopentane_c[i] - acsf_squal_c[j]))
+        diff_man.append(np.sum(np.abs(acsf_isopentane_c[i] - acsf_squal_c[j])))
 
-    diff_isopentane.append(min(diff))
+    diff_euc_isopentane.append(min(diff_euc))
+    diff_man_isopentane.append(min(diff_man))
 
 end = time.time()
 print("It took %s s for isopentane" % str(end-start))
 
-np.savez("diff_isopentane.npz", diff_isopentane)
+np.savez("diff_isopentane_2nd.npz", diff_euc_isopentane, diff_man_isopentane)
 
 # Comparing the carbon atoms from squalane to 2isohex
-diff_2isohex=[]
+diff_euc_2isohex=[]
+diff_man_2isohex=[]
 
 start = time.time()
 for j in range(acsf_squal_c.shape[0]):
-    diff=[]
+    diff_euc=[]
+    diff_man=[]
 
     for i in range(acsf_2isohex_c.shape[0]):
-        diff.append(np.linalg.norm(acsf_2isohex_c[i]-acsf_squal_c[j]))
+        diff_euc.append(np.linalg.norm(acsf_2isohex_c[i] - acsf_squal_c[j]))
+        diff_man.append(np.sum(np.abs(acsf_2isohex_c[i] - acsf_squal_c[j])))
 
-    diff_2isohex.append(min(diff))
+    diff_euc_2isohex.append(min(diff_euc))
+    diff_man_2isohex.append(min(diff_man))
 
 end = time.time()
 print("It took %s s for 2-isohexane" % str(end-start))
 
-np.savez("diff_2isohex.npz", diff_2isohex)
+np.savez("diff_2isohex_2nd.npz", diff_euc_2isohex, diff_man_2isohex)
 
 # Comparing the carbon atoms from squalane to 3isohex
-diff_3isohex=[]
+diff_euc_3isohex=[]
+diff_man_3isohex=[]
 
 start = time.time()
 for j in range(acsf_squal_c.shape[0]):
-    diff=[]
+    diff_euc=[]
+    diff_man=[]
 
     for i in range(acsf_3isohex_c.shape[0]):
-        diff.append(np.linalg.norm(acsf_3isohex_c[i]-acsf_squal_c[j]))
+        diff_euc.append(np.linalg.norm(acsf_3isohex_c[i] - acsf_squal_c[j]))
+        diff_man.append(np.sum(np.abs(acsf_3isohex_c[i] - acsf_squal_c[j])))
 
-    diff_3isohex.append(min(diff))
+    diff_euc_3isohex.append(min(diff_euc))
+    diff_man_3isohex.append(min(diff_man))
 
 end = time.time()
 print("It took %s s for 3-isohexane" % str(end-start))
 
-np.savez("diff_3isohex.npz", diff_3isohex)
-
-np.savez("differences.npz", diff_methane, diff_isopentane, diff_2isohex, diff_3isohex)
+np.savez("diff_3isohex_2nd.npz", diff_euc_3isohex, diff_man_3isohex)
 
 # part_fig_1, part_ax_1 = plt.subplots(figsize=(6,5))
 # part_ax_1.plot(bins[1:], hist, label="First carbon")

@@ -26,10 +26,11 @@ zs_meth = np.array(dataset_meth['zs'])[idx_train_meth]
 energies_meth = np.asarray(dataset_meth['ene'])[idx_train_meth] * 2625.50
 energies_meth -= ref_energy
 ene_scaled_meth = scaling.transform(zs_meth, energies_meth)
+traj_idx_meth = traj_idx_meth[idx_train_meth]
 
 # Keeping a trajectory for testing isopentane
 traj_idx_isopent = np.asarray(dataset_isopent['traj_idx'], dtype=int)
-idx_train_isopent = np.where(traj_idx_isopent != 22)[0]
+idx_train_isopent = np.where(traj_idx_isopent != 1)[0]
 n_samples_isopent = 5000
 shuffle(idx_train_isopent)
 idx_train_isopent = idx_train_isopent[:n_samples_isopent]
@@ -39,6 +40,7 @@ n_atoms_isopent = len(zs_isopent[0])
 energies_isopent = np.asarray(dataset_isopent['ene'])[idx_train_isopent] * 2625.50
 energies_isopent -= ref_energy
 ene_scaled_isopent = scaling.transform(zs_isopent, energies_isopent)
+traj_idx_isopent = traj_idx_isopent[idx_train_isopent]
 
 
 # Updating the Data object
@@ -59,3 +61,8 @@ indices = np.arange(n_samples_meth+n_samples_isopent)
 with open('idx.csv', 'w') as f:
     for i in indices:
         f.write('%s\n' % i)
+
+joint_traj_idx = list(traj_idx_meth) + list(traj_idx_isopent+max(traj_idx_meth))
+with open('groups.csv', 'w') as f:
+    for i in indices:
+        f.write('%s\n' % joint_traj_idx[i])
