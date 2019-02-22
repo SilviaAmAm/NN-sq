@@ -118,116 +118,25 @@ acsf_3isohex_c = reshape_trim(acsf_3isohex, zs_3isohex)
 acsf_dimer_c = reshape_trim(acsf_dimer, zs_dimer)
 acsf_squal_c = reshape_trim(acsf_squal, zs_squal)
 
-print(acsf_methane_c.shape, acsf_isopentane_c.shape, acsf_2isohex_c.shape, acsf_squal_c.shape)
+training_c = np.concatenate((acsf_methane_c, acsf_isopentane_c, acsf_2isohex_c, acsf_3isohex_c))
 
-# # Comparing the carbon atoms from squalane to methane
-# diff_euc_methane=[]
-# diff_man_methane=[]
-#
-# start = time.time()
-# for j in range(acsf_squal_c.shape[0]):
-#     diff_euc=[]
-#     diff_man=[]
-#
-#     for i in range(acsf_methane_c.shape[0]):
-#         diff_euc.append(np.linalg.norm(acsf_methane_c[i] - acsf_squal_c[j]))
-#         diff_man.append(np.sum(np.abs(acsf_methane_c[i] - acsf_squal_c[j])))
-#
-#     diff_euc_methane.append(min(diff_euc))
-#     diff_man_methane.append(min(diff_man))
-#
-# end = time.time()
-# print("It took %s s for methane" % str(end-start))
-#
-# np.savez("diff_methane.npz", diff_euc_methane, diff_man_methane)
-#
-# # Comparing the carbon atoms from squalane to isopentane
-# diff_euc_isopentane=[]
-# diff_man_isopentane=[]
-#
-# start = time.time()
-# for j in range(acsf_squal_c.shape[0]):
-#     diff_euc=[]
-#     diff_man=[]
-#
-#     for i in range(acsf_isopentane_c.shape[0]):
-#         diff_euc.append(np.linalg.norm(acsf_isopentane_c[i] - acsf_squal_c[j]))
-#         diff_man.append(np.sum(np.abs(acsf_isopentane_c[i] - acsf_squal_c[j])))
-#
-#     diff_euc_isopentane.append(min(diff_euc))
-#     diff_man_isopentane.append(min(diff_man))
-#
-# end = time.time()
-# print("It took %s s for isopentane" % str(end-start))
-#
-# np.savez("diff_isopentane_2nd.npz", diff_euc_isopentane, diff_man_isopentane)
-#
-# # Comparing the carbon atoms from squalane to 2isohex
-# diff_euc_2isohex=[]
-# diff_man_2isohex=[]
-#
-# start = time.time()
-# for j in range(acsf_squal_c.shape[0]):
-#     diff_euc=[]
-#     diff_man=[]
-#
-#     for i in range(acsf_2isohex_c.shape[0]):
-#         diff_euc.append(np.linalg.norm(acsf_2isohex_c[i] - acsf_squal_c[j]))
-#         diff_man.append(np.sum(np.abs(acsf_2isohex_c[i] - acsf_squal_c[j])))
-#
-#     diff_euc_2isohex.append(min(diff_euc))
-#     diff_man_2isohex.append(min(diff_man))
-#
-# end = time.time()
-# print("It took %s s for 2-isohexane" % str(end-start))
-#
-# np.savez("diff_2isohex_2nd.npz", diff_euc_2isohex, diff_man_2isohex)
-#
-# # Comparing the carbon atoms from squalane to 3isohex
-# diff_euc_3isohex=[]
-# diff_man_3isohex=[]
-#
-# start = time.time()
-# for j in range(acsf_squal_c.shape[0]):
-#     diff_euc=[]
-#     diff_man=[]
-#
-#     for i in range(acsf_3isohex_c.shape[0]):
-#         diff_euc.append(np.linalg.norm(acsf_3isohex_c[i] - acsf_squal_c[j]))
-#         diff_man.append(np.sum(np.abs(acsf_3isohex_c[i] - acsf_squal_c[j])))
-#
-#     diff_euc_3isohex.append(min(diff_euc))
-#     diff_man_3isohex.append(min(diff_man))
-#
-# end = time.time()
-# print("It took %s s for 3-isohexane" % str(end-start))
-#
-# np.savez("diff_3isohex_2nd.npz", diff_euc_3isohex, diff_man_3isohex)
-
-# Comparing the carbon atoms from squalane to dimer
-diff_euc_dimer=[]
-diff_man_dimer=[]
+# Comparing the carbon atoms from squalane to all the training set
+diff_euc_tot=[]
+diff_man_tot=[]
 
 start = time.time()
 for j in range(acsf_squal_c.shape[0]):
     diff_euc=[]
     diff_man=[]
 
-    for i in range(acsf_dimer_c.shape[0]):
-        diff_euc.append(np.linalg.norm(acsf_dimer_c[i] - acsf_squal_c[j]))
-        diff_man.append(np.sum(np.abs(acsf_dimer_c[i] - acsf_squal_c[j])))
+    for i in range(training_c.shape[0]):
+        diff_euc.append(np.linalg.norm(training_c[i] - acsf_squal_c[j]))
+        diff_man.append(np.sum(np.abs(training_c[i] - acsf_squal_c[j])))
 
-    diff_euc_dimer.append(min(diff_euc))
-    diff_man_dimer.append(min(diff_man))
+    diff_euc_tot.append(min(diff_euc))
+    diff_man_tot.append(min(diff_man))
 
 end = time.time()
-print("It took %s s for the dimer" % str(end-start))
+print("It took %s s for all the data set" % str(end-start))
 
-np.savez("diff_dimer_2nd.npz", diff_euc_dimer, diff_man_dimer)
-
-# part_fig_1, part_ax_1 = plt.subplots(figsize=(6,5))
-# part_ax_1.plot(bins[1:], hist, label="First carbon")
-# part_ax_1.set(xlabel="Euclidean distance", ylabel="Occurrences")
-# part_ax_1.legend()
-# part_fig_1.savefig("../images/isopentane_bins.png", dpi=200)
-# plt.show()
+np.savez("diff_total_2nd.npz", diff_euc_tot, diff_man_tot)

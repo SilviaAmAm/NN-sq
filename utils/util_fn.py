@@ -62,13 +62,13 @@ def find_abstracted_h(xyz, h_idx, h_type):
 
     return h_abstracted_type
 
-def check_hnc(xyz, h_idx):
+def check_hnc(xyz, h_idx, n_idx):
 
     min_dist = 10
     hnc = False
 
     for i, idx in enumerate(h_idx):
-        dist_vec = xyz[idx] - xyz[21]
+        dist_vec = xyz[idx] - xyz[n_idx]
         dist = np.linalg.norm(dist_vec)
         if dist <= min_dist:
             min_dist = dist
