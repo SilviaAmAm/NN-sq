@@ -51,26 +51,24 @@ def write_vmd(xyz, zs, idx):
 
     dict = {1:"H", 6:"C", 7:"N", 2:"P"}
 
-    f = open("traj.xyz", "w")
+    f = open("short_traj.xyz", "w")
 
-    for indices in idx:
-
-        mol_idx = indices[0]
-        atom_idx = indices[1]
+    for mol_idx,atom_indices in idx.items():
 
         f.write(str(len(zs[mol_idx])))
         f.write("\n\n")
 
         for j in range(len(zs[mol_idx])):
-            if j == atom_idx:
-                zs[mol_idx][atom_idx] = 2
-            f.write(dict[zs[mol_idx][atom_idx]])
+            if j in atom_indices:
+                zs[mol_idx][j] = 2
+            f.write(dict[zs[mol_idx][j]])
             f.write("\t")
 
             for k in range(3):
-                f.write(str(xyz[mol_idx][atom_idx][k]))
+                f.write(str(xyz[mol_idx][j][k]))
                 f.write("\t")
             f.write("\n")
+    f.close()
     
 # Getting the dataset
 data_isopentane = h5py.File("../data_sets/isopentane_cn_dft.hdf5", "r")
@@ -108,7 +106,7 @@ acsf_squal_c, mol_idx, atom_idx = reshape_trim(acsf_squal, zs_squal)
 
 
 # Comparing the carbon atoms from squalane to isopentane
-bad_represented_c = []
+bad_represented_c = {}
 
 start = time.time()
 for j in range(acsf_squal_c.shape[0]):
@@ -121,7 +119,12 @@ for j in range(acsf_squal_c.shape[0]):
 
     if min_d >= 6:
         print("Found a bad carbon!")
-        bad_represented_c.append((mol_idx[j], atom_idx[j]))
+        if mol_idx[j] in bad_represented_c:
+            bad_represented_c[mol_idx[j]].append(atom_idx[j])
+        else:
+            bad_represented_c[mol_idx[j]] = [atom_idx[j]]
 
+end = time.time()
 write_vmd(xyz_squal, zs_squal, bad_represented_c)
+print("This took %s s." % str(end-start))
 
