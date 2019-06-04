@@ -110,7 +110,8 @@ def print_how_many_pst(h_id, traj_idx):
     print("There are %i, %i and %i primary, secondary and tertiary abstractions in %i trajectories" % (primary, secondary, tertiary, len(traj)) )
 
 # Data VR
-data = h5py.File("../data_sets/squalane_cn_dft.hdf5", "r")
+# data = h5py.File("../data_sets/squalane_cn_dft.hdf5", "r")
+data = h5py.File("../data_sets/isobutane_cn_dft.hdf5", "r")
 
 traj_idx = np.array(data.get("traj_idx"))
 xyz = np.array(data.get("xyz"))
@@ -167,5 +168,5 @@ shuffle(idx)
 g = sns.jointplot(ch_dist_alk_vr[idx], ch_dist_cn_vr[idx], kind="scatter", height=7, space=0, xlim=(0.5, 5.0), ylim=(0.5, 5.0), alpha=0.1)
 g.set_axis_labels("D2 (Å)", "D1 (Å)")
 plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
-plt.savefig("../images/2d_kde_squalane.png", dpi=200)
+plt.savefig("/Volumes/Transcend/repositories/thesis/ffnn_results_fig/scatter_isobutane.png", dpi=200)
 plt.show()
