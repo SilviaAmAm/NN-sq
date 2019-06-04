@@ -27,7 +27,8 @@ def add_subplot_axes(ax, rect):
     subax.yaxis.set_tick_params(labelsize=y_labelsize)
     return subax
 
-data = np.load("../training/methane_isopent_isohex/model1/predictions.npz")
+#data = np.load("../training/methane_isopent_isohex/model1/predictions.npz")
+data = np.load("../training/meth_isop_isohex23/sorted_predictions_right_model.npz")
 
 pred_ene_methane_traj = data["arr_0"]
 true_ene_methane_traj = data["arr_1"]
@@ -65,7 +66,7 @@ print("Methane error for MAE: %s" % str(np.std(true_ene_methane_traj-pred_ene_me
 # subax1.set_ylabel("Predicted energy (kJ/mol)", labelpad=2, **subax_font)
 # subax1.tick_params(axis='x', labelsize=20)
 # subax1.tick_params(axis='y', labelsize=20)
-# plt.savefig("../images/methane_pred_3.png", dpi=200)
+# plt.savefig("./methane.png", dpi=200)
 # plt.show()
 
 # Isopentane trajectory
@@ -89,32 +90,33 @@ print("Isopentane error for MAE: %s" % str(np.std(true_ene_isopentane_traj-pred_
 # subax1.set_ylabel("Predicted energy (kJ/mol)", labelpad=2, **subax_font)
 # subax1.tick_params(axis='x', labelsize=20)
 # subax1.tick_params(axis='y', labelsize=20)
-# plt.savefig("../images/isopentane_pred_3.png", dpi=200)
+# plt.savefig("./isopentane.png", dpi=200)
 # plt.show()
+
 
 # 2-Isohexane trajectory
 print("2Isohexane error for MAE: %s" % str(np.std(true_ene_2isohex_traj-pred_ene_2isohex_traj)))
-# x = list(range(len(true_ene_2isohex_traj)))
-# fig, ax = plt.subplots(figsize=(10,10))
-#
-# subpos = [0.67,0.67,0.3,0.3] # Relative x,y and height, width
-# ax_font = {'size':'19'}
-# subax_font = {'size':'16'}
-# ax.scatter(x, true_ene_2isohex_traj, label="True values", s=50)
-# ax.scatter(x, pred_ene_2isohex_traj, label="Predictions", s=50)
-# ax.set_xlabel("Frame Number", labelpad=7, **ax_font)
-# ax.set_ylabel("Scaled energy (kJ/mol)", labelpad=5, **ax_font)
-# ax.tick_params(axis='x', labelsize=24)
-# ax.tick_params(axis='y', labelsize=24)
-# ax.legend(prop={'size':15}, loc=2)
-# subax1 = add_subplot_axes(ax, subpos)
-# subax1.scatter(true_ene_2isohex_traj, pred_ene_2isohex_traj, s=10, c=sns.color_palette()[2])
-# subax1.set_xlabel("True energy (kJ/mol)", labelpad=3, **subax_font)
-# subax1.set_ylabel("Predicted energy (kJ/mol)", labelpad=2, **subax_font)
-# subax1.tick_params(axis='x', labelsize=20)
-# subax1.tick_params(axis='y', labelsize=20)
-# plt.savefig("../images/2isohex_pred_3.png", dpi=200)
-# plt.show()
+x = list(range(len(true_ene_2isohex_traj)))
+fig, ax = plt.subplots(figsize=(10,10))
+
+subpos = [0.67,0.67,0.3,0.3] # Relative x,y and height, width
+ax_font = {'size':'19'}
+subax_font = {'size':'16'}
+ax.scatter(x, true_ene_2isohex_traj, label="True values", s=50)
+ax.scatter(x, pred_ene_2isohex_traj, label="Predictions", s=50)
+ax.set_xlabel("Frame Number", labelpad=7, **ax_font)
+ax.set_ylabel("Scaled energy (kJ/mol)", labelpad=5, **ax_font)
+ax.tick_params(axis='x', labelsize=24)
+ax.tick_params(axis='y', labelsize=24)
+ax.legend(prop={'size':15}, loc=2)
+subax1 = add_subplot_axes(ax, subpos)
+subax1.scatter(true_ene_2isohex_traj, pred_ene_2isohex_traj, s=10, c=sns.color_palette()[2])
+subax1.set_xlabel("True energy (kJ/mol)", labelpad=3, **subax_font)
+subax1.set_ylabel("Predicted energy (kJ/mol)", labelpad=2, **subax_font)
+subax1.tick_params(axis='x', labelsize=20)
+subax1.tick_params(axis='y', labelsize=20)
+plt.savefig("./2isohex.png", dpi=200)
+plt.show()
 
 # 3-Isohexane trajectory
 print("3Isohexane error for MAE: %s" % str(np.std(true_ene_3isohex_traj-pred_ene_3isohex_traj)))
@@ -137,7 +139,7 @@ print("3Isohexane error for MAE: %s" % str(np.std(true_ene_3isohex_traj-pred_ene
 # subax1.set_ylabel("Predicted energy (kJ/mol)", labelpad=2, **subax_font)
 # subax1.tick_params(axis='x', labelsize=20)
 # subax1.tick_params(axis='y', labelsize=20)
-# plt.savefig("../images/3isohex_pred_3.png", dpi=200)
+# plt.savefig("./3isohex.png", dpi=200)
 # plt.show()
 
 # Squalane trajectory
@@ -162,7 +164,7 @@ print("Squalane error for MAE: %s" % str(np.std(true_ene_squal-pred_ene_squal)))
 # subax1.set_ylabel("Predicted energy (kJ/mol)", labelpad=2, **subax_font)
 # subax1.tick_params(axis='x', labelsize=17)
 # subax1.tick_params(axis='y', labelsize=17)
-# # plt.savefig("../images/squal_pred_3.png", dpi=200)
-# # plt.show()
+# plt.savefig("./squal.png", dpi=200)
+# plt.show()
 
-# print(np.mean(np.abs(true_ene_squal-(pred_ene_squal+100))))
+print(np.mean(np.abs(true_ene_squal-(pred_ene_squal+100))))

@@ -15,6 +15,8 @@ n_samples = 15000
 
 zs_squal = np.array(data_squal.get("zs"), dtype=np.int32)
 n_atoms_squal = len(zs_squal[0])
+print(n_atoms_squal)
+exit()
 print("The number of squalane samples is: %i" % len(zs_squal))
 
 traj_idx_methane = np.asarray(data_methane.get('traj_idx'), dtype=int)

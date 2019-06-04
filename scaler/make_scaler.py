@@ -11,12 +11,14 @@ sys.path.append(cwd+"/../utils/")
 import util_fn
 
 # Getting all the data files
-data_methane = h5py.File("/Volumes/Transcend/repositories/NN-sq/data_sets/methane_cn_dft.hdf5", "r")
-data_isopentane = h5py.File("/Volumes/Transcend/repositories/NN-sq/data_sets/isopentane_cn_dft.hdf5", "r")
-data_2isohex = h5py.File("/Volumes/Transcend/repositories/NN-sq/data_sets/2isohexane_cn_dft_pruned.hdf5", "r")
-data_3isohex = h5py.File("/Volumes/Transcend/repositories/NN-sq/data_sets/3isohexane_cn_dft_pruned.hdf5", "r")
-# data_dimer = h5py.File("/Volumes/Transcend/repositories/NN-sq/data_sets/isopentane_dimer_cn_dft.hdf5", "r")
-data_squalane = h5py.File("/Volumes/Transcend/repositories/NN-sq/data_sets/squalane_cn_dft.hdf5", "r")
+data_methane = h5py.File("../data_sets/methane_cn_dft.hdf5", "r")
+data_ethane = h5py.File("../data_sets/ethane_cn_dft.hdf5", "r")
+data_isobutane = h5py.File("../data_sets/isobutane_cn_dft.hdf5", "r")
+data_isopentane = h5py.File("../data_sets/isopentane_cn_dft.hdf5", "r")
+data_2isohex = h5py.File("../data_sets/2isohexane_cn_dft_pruned.hdf5", "r")
+data_3isohex = h5py.File("../data_sets/3isohexane_cn_dft_pruned.hdf5", "r")
+# data_dimer = h5py.File("../data_sets/isopentane_dimer_cn_dft.hdf5", "r")
+data_squalane = h5py.File("../data_sets/squalane_cn_dft.hdf5", "r")
 
 ref_ene = -133.1 * 2625.50
 
@@ -31,6 +33,30 @@ fn_methane = np.array(data_methane.get("Filenumber"))
 
 # Sorting the trajectories of methane
 traj_idx_methane, ene_methane, zs_methane, fn_methane, xyz_methane, forces_methane = util_fn.sort_traj(traj_idx_methane, ene_methane, zs_methane, fn_methane, xyz_methane, forces_methane)
+
+# Getting the energies and the nuclear charges of all the systems
+ene_ethane = np.array(data_ethane.get("ene")) * 2625.50
+ene_ethane = ene_ethane - ref_ene
+zs_ethane = np.array(data_ethane.get("zs"), dtype=np.int32)
+xyz_ethane = np.array(data_ethane.get("xyz"), dtype=np.int32)
+forces_ethane = np.array(data_ethane.get("forces"), dtype=np.int32)
+traj_idx_ethane = np.array(data_ethane.get("traj_idx"))
+fn_ethane = np.array(data_ethane.get("Filenumber"))
+
+# Sorting the trajectories of ethane
+traj_idx_ethane, ene_ethane, zs_ethane, fn_ethane, xyz_ethane, forces_ethane = util_fn.sort_traj(traj_idx_ethane, ene_ethane, zs_ethane, fn_ethane, xyz_ethane, forces_ethane)
+
+# Getting the energies and the nuclear charges of all the systems
+ene_isobutane = np.array(data_isobutane.get("ene")) * 2625.50
+ene_isobutane = ene_isobutane - ref_ene
+zs_isobutane = np.array(data_isobutane.get("zs"), dtype=np.int32)
+xyz_isobutane = np.array(data_isobutane.get("xyz"), dtype=np.int32)
+forces_isobutane = np.array(data_isobutane.get("forces"), dtype=np.int32)
+traj_idx_isobutane = np.array(data_isobutane.get("traj_idx"))
+fn_isobutane = np.array(data_isobutane.get("Filenumber"))
+
+# Sorting the trajectories of isobutane
+traj_idx_isobutane, ene_isobutane, zs_isobutane, fn_isobutane, xyz_isobutane, forces_isobutane = util_fn.sort_traj(traj_idx_isobutane, ene_isobutane, zs_isobutane, fn_isobutane, xyz_isobutane, forces_isobutane)
 
 ene_isopent = np.array(data_isopentane.get("ene")) * 2625.50
 ene_isopent = ene_isopent - ref_ene
@@ -89,14 +115,10 @@ fn_squal = np.array(data_squalane.get("Filenumber"))
 traj_idx_squal, ene_squal, zs_squal, fn_squal, xyz_squal, forces_squal = util_fn.sort_traj(traj_idx_squal, ene_squal, zs_squal, fn_squal, xyz_squal, forces_squal)
 
 # Concatenating all the data
-ene_for_scaler = np.concatenate((ene_methane[:100], ene_isopent[:100], ene_2hex[:100], ene_3hex[:100], ene_squal[:100]))
-zs_for_scaler = list(zs_methane[:100]) + list(zs_isopent[:100]) + list(zs_2hex[:100]) + list(zs_3hex[:100]) + list(zs_squal[:100])
-# ene_for_scaler = np.asarray([ene_methane[0], ene_isopent[0], ene_2hex[0], ene_3hex[0], ene_dimer[0]])
-# zs_for_scaler = [zs_methane[0], zs_isopent[0], zs_2hex[0], zs_3hex[0], zs_dimer[0]]
-# ene_for_scaler = np.asarray([ene_methane[0], ene_isopent[0], ene_2hex[0], ene_3hex[0]])
-# zs_for_scaler = [zs_methane[0], zs_isopent[0], zs_2hex[0], zs_3hex[0]]
+ene_for_scaler = np.concatenate((ene_methane[:100], ene_ethane[:100], ene_isobutane[:100], ene_isopent[:100], ene_2hex[:100], ene_3hex[:100], ene_squal[:100]))
+zs_for_scaler = list(zs_methane[:100]) + list(zs_ethane[:100]) + list(zs_isobutane[:100]) + list(zs_isopent[:100]) + list(zs_2hex[:100]) + list(zs_3hex[:100]) + list(zs_squal[:100])
 
 scaling = AtomScaler()
 scaling.fit(zs_for_scaler, ene_for_scaler)
 
-pickle.dump(scaling, open("scaler.pickle", "wb"))
+pickle.dump(scaling, open("larger_scaler.pickle", "wb"))

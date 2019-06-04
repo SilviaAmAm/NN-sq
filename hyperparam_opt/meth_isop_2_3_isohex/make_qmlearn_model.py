@@ -12,7 +12,7 @@ dataset_2isohex = h5py.File("../../data_sets/2isohexane_cn_dft_pruned.hdf5")
 dataset_3isohex = h5py.File("../../data_sets/3isohexane_cn_dft_pruned.hdf5")
 
 ref_energy = -133.1 * 2625.5
-scaling = pickle.load(open("../../scaler/scaler.pickle", "rb"))
+scaling = pickle.load(open("../../scaler/larger_scaler.pickle", "rb"))
 
 # Data objects
 data = qmlearn.Data()
