@@ -124,6 +124,8 @@ for tr in unique_traj:
     ene_reactants.append(ene_traj[:400])
     ene_prods.append(ene_traj[-400:])
 
+print(abstraction_type)
+exit()
 
 tot_ene_react = np.mean(ene_reactants)
 tot_ene_prod = np.mean(ene_prods)

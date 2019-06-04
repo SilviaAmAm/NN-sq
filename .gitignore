@@ -2,3 +2,7 @@
 ./images/
 *.png
 .idea/
+*.pickle
+*.out
+*.npz
+.DS_Store
