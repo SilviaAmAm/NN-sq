@@ -2,7 +2,7 @@
 ./images/
 *.png
 .idea/
-*.pickle
 *.out
 *.npz
 .DS_Store
+utils/__pycache__/
