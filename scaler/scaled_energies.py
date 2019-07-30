@@ -2,6 +2,7 @@ import h5py
 import numpy as np
 import pickle
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 import seaborn as sns
 sns.set()
 sns.set_context("talk")
@@ -52,33 +53,47 @@ ene_methane = np.array(data_methane.get("ene")[:n_samples]) * 2625.50
 ene_methane = ene_methane - ref_ene
 zs_methane = np.array(data_methane.get("zs")[:n_samples], dtype=np.int32)
 
-zs_for_scaler_long = list(zs_methane) + list(zs_ethane) + list(zs_isobutane) +list(zs_isopent) + list(zs_2hex) + list(zs_3hex) + list(zs_dimer) + list(zs_squal)
-concat_ene = np.concatenate((ene_methane, ene_ethane, ene_isobutane, ene_isopent, ene_2hex, ene_3hex, ene_dimer, ene_squal))
+# zs_for_scaler_long = list(zs_methane) + list(zs_ethane) + list(zs_isobutane) +list(zs_isopent) + list(zs_2hex) + list(zs_3hex) + list(zs_dimer) + list(zs_squal)
+# concat_ene = np.concatenate((ene_methane, ene_ethane, ene_isobutane, ene_isopent, ene_2hex, ene_3hex, ene_dimer, ene_squal))
+zs_for_scaler_long = list(zs_methane) + list(zs_ethane) + list(zs_isobutane) +list(zs_isopent) + list(zs_2hex) + list(zs_3hex) + list(zs_squal)
+concat_ene = np.concatenate((ene_methane, ene_ethane, ene_isobutane, ene_isopent, ene_2hex, ene_3hex, ene_squal))
 
 scaling = pickle.load(open("./scaler.pickle", "rb"))
 concat_ene_scaled = scaling.transform(zs_for_scaler_long, concat_ene)
 
-fig, ax = plt.subplots(1, figsize=(8,6))
-ax.scatter(list(range(len(concat_ene))), concat_ene, label="Non scaled", s=12)
-ax.scatter(list(range(len(concat_ene))), concat_ene_scaled, label="Scaled", s=12)
+fig, ax = plt.subplots(1, figsize=(16,6))
+ax.scatter(list(range(len(concat_ene))), concat_ene, label="Non scaled", s=8)
+ax.scatter(list(range(len(concat_ene))), concat_ene_scaled, label="Scaled", s=8)
 offset = 1e5
-hydrocarbons = ["Methane", "Ethane", "Isobutane", "Isopentane", "2-Isohexane", "3-Isohexane", "Isopentane Dimer", "Squalane"]
-for i, hydroc in enumerate(hydrocarbons):
-    if hydroc == "2-Isohexane" or hydroc == "Ethane":
-        ax.text(i*5000,concat_ene[i*5000]-1.5*offset, hydroc, fontsize=12)
-    else:
-        ax.text(i * 5000+500, concat_ene[i * 5000] + 0.5*offset, hydroc, fontsize=12)
+# hydrocarbons = ["Methane", "Ethane", "Isobutane", "Isopentane", "2-Isohexane", "3-Isohexane", "Isopentane Dimer", "Squalane"]
+hydrocarbons = ["Methane", "Ethane", "Isobutane", "Isopentane", "2-Isohexane", "3-Isohexane", "Squalane"]
+
+# for i, hydroc in enumerate(hydrocarbons):
+#     if hydroc == "2-Isohexane" or hydroc == "Ethane":
+#         ax.text(i*5000,concat_ene[i*5000]-1.5*offset, hydroc, fontsize=12)
+#     else:
+#         ax.text(i * 5000+500, concat_ene[i * 5000] + 0.5*offset, hydroc, fontsize=12)
 
 # ax.text(5000,concat_ene[5000]+offset,'Isopentane')
 # ax.text(10000,concat_ene[10000]-2*offset,'2-Isohexane')
 # ax.text(15000,concat_ene[15000]+offset,'3-Isohexane')
 # ax.text(20000,concat_ene[20000]+offset,'Isopentane dimer')
 # ax.text(25000,concat_ene[25000]+offset,'Squalane')
-ax.legend()
-ax.set_xlim((-500, 5000*len(hydrocarbons) + 2000))
+
+ax.set_xlim((-10, 5000*len(hydrocarbons)))
+for i in range(5000,5000*(len(hydrocarbons)+1), 5000):
+    if i == 5000*len(hydrocarbons):
+        ax.text(i - 2500, -190, hydrocarbons[int((i - 1) / 5000)], size=15, ha='center', va='center')
+        break
+    ax.axvline(x=i, color="black", linestyle='--')
+    ax.text(i-2500, -190, hydrocarbons[int((i-1)/5000)], size=15, ha='center', va='center')
 ax.set_ylim((-2e2,2e2))
 ax.set_xlabel("Frames")
 ax.set_ylabel("Energy (kJ/mol)")
-ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-plt.savefig("../images/scaling_all_zoom.png")
-plt.show()
+ax.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.1e'))
+legend = ax.legend(loc='upper left')
+legend.legendHandles[0]._sizes = [30]
+legend.legendHandles[1]._sizes = [30]
+# plt.tight_layout()
+plt.savefig("/Volumes/Transcend/repositories/thesis/ffnn_results_fig/scaling_all_zoom.png", dpi=150)
+# plt.show()

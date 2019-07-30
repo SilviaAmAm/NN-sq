@@ -2,6 +2,7 @@ import h5py
 import numpy as np
 import pickle
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 import seaborn as sns
 sns.set()
 sns.set_context("talk")
@@ -53,23 +54,25 @@ concat_ene = np.concatenate((ene_methane, ene_ethane, ene_isobutane, ene_isopent
 scaling = pickle.load(open("./scaler.pickle", "rb"))
 concat_ene_scaled = scaling.transform(zs_for_scaler_long, concat_ene)
 
-fig, ax = plt.subplots(1, figsize=(8,6))
+fig, ax = plt.subplots(1, figsize=(16,6))
 ax.scatter(list(range(len(concat_ene))), concat_ene, label="Non scaled", s=30)
 ax.scatter(list(range(len(concat_ene))), concat_ene_scaled, label="Scaled", s=30)
-offset = 1e5
-ax.text(0,concat_ene[0]+offset,'Methane')
-ax.text(5500,concat_ene[5000]+offset,'Ethane')
-ax.text(10500,concat_ene[10000]+offset,'Isobutane')
-ax.text(14300,concat_ene[15000]-2.7*offset,'Isopentane')
-ax.text(20500,concat_ene[20000]+offset,'2-Isohexane')
-ax.text(25000,concat_ene[25000]-2.5*offset,'3-Isohexane')
-ax.text(28000,concat_ene[30000]+offset,'Squalane')
+offset = -1.5e5
+hydrocarbons = ["Methane", "Ethane", "Isobutane", "Isopentane", "2-Isohexane", "3-Isohexane", "Squalane"]
+for i in range(5000,5000*(len(hydrocarbons)+1), 5000):
+    if i == 5000*len(hydrocarbons):
+        ax.text(i-4000, concat_ene[i-5000]+offset, hydrocarbons[int((i - 1) / 5000)], ha='center', va='center')
+    else:
+        ax.text(i-2500, concat_ene[i-5000]+offset, hydrocarbons[int((i - 1) / 5000)], ha='center', va='center')
+
 ax.legend()
 ax.set_xlim((-500, 34000))
 ax.set_ylim((-3.25*1e6,0.5*1e6))
 # ax.set_ylim((-2e2,2e2))
 ax.set_xlabel("Frames")
 ax.set_ylabel("Energy (kJ/mol)")
-ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-plt.savefig("/Volumes/Transcend/repositories/thesis/ffnn_results_fig/scaling.png")
-plt.show()
+# ax.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+ax.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.1e'))
+# plt.tight_layout()
+plt.savefig("/Volumes/Transcend/repositories/thesis/ffnn_results_fig/scaling.png", dpi=150)
+# plt.show()

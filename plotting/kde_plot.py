@@ -3,7 +3,7 @@ import bisect
 from random import shuffle
 import matplotlib.pyplot as plt
 import seaborn as sns
-sns.set()
+sns.set(font_scale=1.5)
 sns.set_style("white")
 
 import h5py
@@ -165,8 +165,16 @@ ch_dist_alk_vr, ch_dist_cn_vr = get_distances(xyz, h_id, c_id)
 idx = list(range(traj_idx.shape[0]))
 shuffle(idx)
 
-g = sns.jointplot(ch_dist_alk_vr[idx], ch_dist_cn_vr[idx], kind="scatter", height=7, space=0, xlim=(0.5, 5.0), ylim=(0.5, 5.0), alpha=0.1)
-g.set_axis_labels("D2 (Å)", "D1 (Å)")
-plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+fig, ax = plt.subplots(1, figsize=(8,6))
+ax.scatter(ch_dist_alk_vr[idx], ch_dist_cn_vr[idx], alpha=0.1)
+ax.set_xlabel("$C_{C_{30}H_{62}}$-$H$ distance (Å)")
+ax.set_ylabel("$C_{CN}$-$H$ distance (Å)")
+ax.set_xlim((0.5, 5.0))
+ax.set_ylim((0.5, 5.0))
+
+# g = sns.jointplot(ch_dist_alk_vr[idx], ch_dist_cn_vr[idx], kind="scatter", height=7, space=0, xlim=(0.5, 5.0), ylim=(0.5, 5.0), alpha=0.1)
+# g.set_axis_labels("$C_{C_4H_{10}}$-$H$ distance (Å)", "$C_{CN}$-$H$ distance (Å)")
+# plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+plt.tight_layout()
 plt.savefig("/Volumes/Transcend/repositories/thesis/ffnn_results_fig/scatter_isobutane.png", dpi=200)
 plt.show()
